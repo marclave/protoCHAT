@@ -1,0 +1,5 @@
+List of requirements and/or ideas:
+- Terminal based application
+- Simple commands/instructions on how to use (GOOD README)
+- What kind of hosting is this going to be? Do we host a server or can anyone(I think anyone m.)
+- 
