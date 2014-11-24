@@ -30,7 +30,7 @@ if __name__ == "__main__":
 	print "================================="
 	print "            protoCHAT            "
 	print "          Developed by:          "
-	print "		    Marc Laventure          "
+	print "		Marc Laventure          "
 	print "             Toasty              "
 	print "================================="
 	print ""
