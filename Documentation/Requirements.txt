@@ -5,3 +5,5 @@ List of requirements and/or ideas:
 - What kind of hosting is this going to be? Do we host a server or can anyone(I think anyone m.)
 	- Possibly no "third-party" server
 	- Clients are able to locally setup or connect to "rooms" by use of a passphrase
+- Clients should be able to have multiple chats with different people at the same time
+	- This can be done by adding a gui option in command line to add chats, i thought of a cool implementation (FUTURE)
