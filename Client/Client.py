@@ -6,7 +6,7 @@ class Client:
 	"""TODO m: Client class description"""
 	def __init__(self, host, port):
 		self.host = host
-		self.port = port
+		self.port = int(port)
 
 	def run(self):
 
@@ -20,10 +20,10 @@ class Client:
 		while True:
 			#TODO m: wait for user input
 			s.send("Test message")
-			sleep(50)
+			#sleep(50)
 
 			#TODO m: if input is exit; close connection
-			s.close()
+			#s.close()
 
 if __name__ == "__main__":
 

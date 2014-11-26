@@ -1,12 +1,13 @@
 import socket
 import sys
 import os
+from thread import *
 
 class Server:
 	"""TODO m: Description for class name"""
 	def __init__(self, host, port):
 		self.host = host
-		self.port = port
+		self.port = int(port)
 
 	def run(self):
 		
@@ -21,9 +22,9 @@ class Server:
 
 		while True:
 			connection, address = s.accept()
-			print "Got a connection from" + address
+			print "Got a connection from some dude @ " + str(tuple(address))
 			connection.send("Welcome to the danger zone")
-			connection.close
+			#connection.close()	
 
 if __name__ == "__main__":
 
