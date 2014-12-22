@@ -19,11 +19,17 @@ class Client:
 		
 		while True:
 			#TODO m: wait for user input
-			s.send("Test message")
+			#s.send("Test message")
 			#sleep(50)
-
+			#ins = input("Enter command:")
+			ins = sys.stdin.readline()
+			try:
+				s.sendall(ins)
+			except:
+				print 'Send failed'
+				sys.exit()	
 			#TODO m: if input is exit; close connection
-			#s.close()
+			#s.close()	
 
 if __name__ == "__main__":
 
