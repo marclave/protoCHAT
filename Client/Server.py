@@ -1,7 +1,7 @@
 import socket
 import sys
 import os
-from thread import *
+from threading import Thread
 
 class Server:
 	"""TODO m: Description for class name"""
@@ -22,9 +22,25 @@ class Server:
 
 		while True:
 			connection, address = s.accept()
-			print "Got a connection from some dude @ " + str(tuple(address))
-			connection.send("Welcome to the danger zone")
-			#connection.close()	
+			print "Got a connection from user @ " + str(tuple(address))
+			#connection.send("Welcome to the danger zone")
+
+			# Now with this new connection, we open a new thread to deal with that specific client
+			# TODO s: Add this connection to a "connection pool", list of all open connections
+			newThread = Thread(target = server.talkToClient, args = [connection, address])
+			newThread.start()
+			#connection.close()
+
+	def talkToClient(self, connection, address):
+		while True:
+			try:
+				data = connection.recv(1024)
+				print data
+			except:
+				print "Client at " + str(address) + " went offline"
+				break		
+		connection.close()		
+
 
 if __name__ == "__main__":
 
