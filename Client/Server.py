@@ -1,6 +1,8 @@
 import socket
 import sys
 import os
+import re
+from time import ctime
 from threading import Thread
 
 class Server:
@@ -8,6 +10,7 @@ class Server:
 	def __init__(self, host, port):
 		self.host = host
 		self.port = int(port)
+		self.clients = set()
 
 	def run(self):
 		
@@ -22,7 +25,10 @@ class Server:
 
 		while True:
 			connection, address = s.accept()
-			print "Got a connection from user @ " + str(tuple(address))
+
+			self.clients.add((connection, address))
+
+			print "Got a connection from user @ " + str(address)
 			#connection.send("Welcome to the danger zone")
 
 			# Now with this new connection, we open a new thread to deal with that specific client
@@ -34,11 +40,24 @@ class Server:
 	def talkToClient(self, connection, address):
 		while True:
 			try:
+				#TODO m: need to update this timeout also need to catch better
+				connection.settimeout(5)
+
 				data = connection.recv(1024)
-				print data
+				for conn, addr in self.clients:
+					#TODO m: change to addr[0] but for now all is local so we need to check port
+					if addr[1] != address[1]:
+						conn.send('[%s] %s' % (ctime(), data))
+					else:
+						continue
+						#TODO m: Need to update this so that it sends to sender a new line with desired GUI
+
+			except socket.timeout:
+				continue
+				# Passed timeout	
 			except:
-				print "Client at " + str(address) + " went offline"
-				break		
+				print "Something went wrong"
+				break	
 		connection.close()		
 
 
@@ -47,7 +66,7 @@ if __name__ == "__main__":
 	print "================================="
 	print "            protoCHAT            "
 	print "          Developed by:          "
-	print "		 Marc Laventure         "
+	print "         Marc Laventure          "
 	print "             Toasty              "
 	print "================================="
 	print ""
@@ -61,5 +80,3 @@ if __name__ == "__main__":
 		sys.exit()
 
 	server.run()
-
-
