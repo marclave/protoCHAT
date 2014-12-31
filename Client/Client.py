@@ -1,7 +1,7 @@
 import socket
 import time
 import sys
-import thread
+from threading import Thread
 
 class Client:
 	"""TODO m: Client class description"""
@@ -10,35 +10,35 @@ class Client:
 		self.port = int(port)
 
 	def run(self):
-
 		try:
 			s = socket.socket()
 			s.connect((self.host, self.port))
 		except Exception, e:
 			raise e
 			sys.exit()
+		
+		sendStuff = Thread(target = session.send, args = [s,])
+		receiveStuff = Thread(target = session.receive, args = [s,])
+		sendStuff.start()		
+		receiveStuff.start()
 
+	def send(self, connection):
 		while True:
-			
-			#TODO m: Need to poll waiting for stdin so we can recieve messages as they come vs after stdin
-			ins = sys.stdin.readline()
-
 			try:
-				s.sendall(ins)
+				ins = sys.stdin.readline()
+				connection.sendall(ins)
 			except:
-				print 'Send failed'
-				sys.exit()
-			
-			try:
-				received = s.recv(1024)
-				print received
-			except Exception, e:
-				print e
-				print "Could not recieve"
+				print "In client.send, something broke"
 				sys.exit()
 
-			#TODO m: if input is exit; close connection
-			#s.close()	
+	def receive(self, connection):
+		while True:
+			try:
+				received = connection.recv(1024)
+				print received
+			except:
+				print "In client.receive, something broke"			
+				sys.exit()
 
 if __name__ == "__main__":
 
