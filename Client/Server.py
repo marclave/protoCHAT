@@ -4,6 +4,7 @@ import os
 import re
 from time import ctime
 from threading import Thread
+import thread
 
 class Server:
 	"""TODO m: Description for class name"""
@@ -12,8 +13,7 @@ class Server:
 		self.port = int(port)
 		self.clients = set()
 
-	def run(self):
-		
+	def run(self):		
 		try:
 			s = socket.socket()
 			s.bind((self.host, self.port))
@@ -26,40 +26,43 @@ class Server:
 		while True:
 			connection, address = s.accept()
 
+			# TODO s: Somehow identify who the client is at this point
 			self.clients.add((connection, address))
-
 			print "Got a connection from user @ " + str(address)
-			#connection.send("Welcome to the danger zone")
 
 			# Now with this new connection, we open a new thread to deal with that specific client
-			# TODO s: Add this connection to a "connection pool", list of all open connections
-			newThread = Thread(target = server.talkToClient, args = [connection, address])
-			newThread.start()
-			#connection.close()
+			receiveThread = Thread(target = server.receiveMessages, args = [connection, address])
+			receiveThread.start()
 
-	def talkToClient(self, connection, address):
+	# Called from the receiveThread each time that there is a message to send to the "chat room"		
+	def sendMessages(self, connection, address, data):
+		try:
+			# Marc, I don't quite understand this
+			for conn, addr in self.clients:
+				#TODO m: change to addr[0] but for now all is local so we need to check port
+				if addr[1] != address[1]:
+					conn.send('[%s] %s' % (ctime(), data))
+				else:
+					continue
+					#TODO m: Need to update this so that it sends to sender a new line with desired GUI
+
+		except socket.timeout:
+			print "Would this ever happen??"
+			# Passed timeout	
+		except:
+			print "Client has DC'ed..."		
+			print "Something went wrong"
+			conn.close()
+
+	def receiveMessages(self, connection, address):
 		while True:
 			try:
-				#TODO m: need to update this timeout also need to catch better
-				connection.settimeout(5)
-
 				data = connection.recv(1024)
-				for conn, addr in self.clients:
-					#TODO m: change to addr[0] but for now all is local so we need to check port
-					if addr[1] != address[1]:
-						conn.send('[%s] %s' % (ctime(), data))
-					else:
-						continue
-						#TODO m: Need to update this so that it sends to sender a new line with desired GUI
-
-			except socket.timeout:
-				continue
-				# Passed timeout	
-			except:
-				print "Something went wrong"
+				self.sendMessages(connection, address, data)
+			except:			
+				print "Client at " + str(address) + " has DC'ed..."	
+				self.clients.remove((connection, address))
 				break	
-		connection.close()		
-
 
 if __name__ == "__main__":
 
