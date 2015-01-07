@@ -9,19 +9,6 @@ class Client:
 		self.host = host
 		self.port = int(port)
 
-	def run(self):
-		try:
-			s = socket.socket()
-			s.connect((self.host, self.port))
-		except Exception, e:
-			raise e
-			sys.exit()
-		
-		sendStuff = Thread(target = session.send, args = [s,])
-		receiveStuff = Thread(target = session.receive, args = [s,])
-		sendStuff.start()		
-		receiveStuff.start()
-
 	def send(self, connection):
 		while True:
 			try:
@@ -39,6 +26,19 @@ class Client:
 			except:
 				print "In client.receive, something broke"			
 				sys.exit()
+
+	def run(self):
+		try:
+			s = socket.socket()
+			s.connect((self.host, self.port))
+		except Exception, e:
+			raise e
+			sys.exit()
+		
+		sendData = Thread(target = session.send, args = [s,])
+		receiveData = Thread(target = session.receive, args = [s,])
+		sendData.start()		
+		receiveData.start()
 
 if __name__ == "__main__":
 
