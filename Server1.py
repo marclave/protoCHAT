@@ -12,7 +12,6 @@ class Server:
 		self.port = int(port)
 		self.clients = set()
 
-	# TODO m: Might be a usefull function in the future
 	def closeServer(self):
 		print "Closing server and disconnecting all clients"
 		for connection, address in self.clients:
@@ -22,7 +21,7 @@ class Server:
 		sys.exit()
 
 	def disconnectClient(self, connection, address):
-		msg = "Client at " + str(address) + " has Disconnected"
+		msg = "Client at " + str(address) + " has Discconnected"
 		print msg
 
 		self.clients.remove((connection, address))
